@@ -9,6 +9,7 @@ const server = Bun.listen({
     hostname: HOST,
     port: PORT,
     socket: {
+
         // open se llama cuando un nuevo cliente se conecta
         open(socket) {
             const { remoteAddress, remotePort } = socket;
@@ -16,6 +17,7 @@ const server = Bun.listen({
             // Puedes guardar el socket o información asociada si necesitas manejar múltiples clientes
             // socket.data = { id: generateUniqueId(), lastSeen: Date.now() };
         },
+
         // data se llama cuando el servidor recibe datos del cliente
         data(socket, buffer) {
             const { remoteAddress, remotePort } = socket;
@@ -34,7 +36,7 @@ const server = Bun.listen({
             
             function parseSimpleLK(asciiData) {
                 // Ejemplo: "[CS*1234567890*0002*LK]"
-                if (asciiData.includes('*LK]')) {
+                if (asciiData.includes('*LK')) {
                     const parts = asciiData.substring(1, asciiData.length - 1).split('*');
                     if (parts.length >= 2 && parts[parts.length-1] === 'LK') {
                         return parts[1]; // Devuelve el Device ID
