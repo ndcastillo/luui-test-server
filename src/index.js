@@ -25,13 +25,13 @@ const server = Bun.listen({
             console.log(`[Bun TCP] Recibido de ${remoteAddress}:${remotePort} (HEX): ${dataHex}`);
             
             // Aquí podrías añadir la lógica para responder al LK
-            // const receivedString = Buffer.from(buffer).toString('ascii'); // o 'utf-8' según el protocolo
+            const receivedString = Buffer.from(buffer).toString('ascii'); // o 'utf-8' según el protocolo
 
             // Ejemplo (MUY simplificado) de detección y respuesta a un LK
             // Necesitarás una lógica de parseo más robusta como la que discutimos antes.
             // Esto asume que el mensaje LK es exactamente '[CS*DEVICEID*0002*LK]'
             // y que `parseSimpleLK` extrae el DEVICEID.
-            /*
+            
             function parseSimpleLK(asciiData) {
                 // Ejemplo: "[CS*1234567890*0002*LK]"
                 if (asciiData.includes('*LK]')) {
@@ -51,7 +51,7 @@ const server = Bun.listen({
                 socket.write(lkResponse); // Enviar respuesta
                 console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
             }
-            */
+            
         },
         // close se llama cuando la conexión se cierra
         close(socket, error) {
