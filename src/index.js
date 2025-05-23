@@ -36,9 +36,12 @@ const server = Bun.listen({
             
             function parseSimpleLK(asciiData) {
                 // Ejemplo: "[CS*1234567890*0002*LK]"
+
+                console.log(asciiData);
+
                 if (asciiData.includes('*LK')) {
                     const parts = asciiData.substring(1, asciiData.length - 1).split('*');
-                    if (parts.length >= 2 && parts[parts.length-1] === 'LK') {
+                    if (parts.length >= 2) {
                         return parts[1]; // Devuelve el Device ID
                     }
                 }
