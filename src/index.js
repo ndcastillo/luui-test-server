@@ -42,17 +42,17 @@ const server = Bun.listen({
                 if (asciiData.includes('*LK')) {
                     const parts = asciiData.substring(1, asciiData.length - 1).split('*');
                     if (parts.length >= 2) {
-                        return parts[1]; // Devuelve el Device ID
+                        return [parts[0], parts[1]]; // Devuelve el Device ID
                     }
                 }
                 return null;
             }
 
-            const deviceId = parseSimpleLK(receivedString);
+            const [generationMobile, deviceId] = parseSimpleLK(receivedString);
             if (deviceId) {
                 // Construir la respuesta LK. El protocolo define fabricante, ID, longitud y contenido.
                 // Aquí 'CS' es el fabricante, deviceId es el ID, '0002' es la longitud de 'LK'.
-                const lkResponse = `[CS*${deviceId}*0002*LK]`;
+                const lkResponse = `[${generationMobile}*${deviceId}*0002*LK]`;
                 socket.write(lkResponse); // Enviar respuesta
                 console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
             }
