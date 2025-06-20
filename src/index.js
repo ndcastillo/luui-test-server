@@ -60,7 +60,7 @@ const server = Bun.listen({
                 const [generationMobile, deviceId, length] = parseSimpleLK(receivedString);
                 if (deviceId) {
                     // Construir la respuesta LK. El protocolo define fabricante, ID, longitud y contenido.
-                    const lkResponse = `[${generationMobile}*${deviceId}*${length}*LK]`;
+                    const lkResponse = `[${generationMobile}*${deviceId}*0002*LK]`;
                     socket.write(lkResponse); // Enviar respuesta
                     console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
                 }
@@ -75,7 +75,7 @@ const server = Bun.listen({
                 const [generationMobile, deviceId, length] = parseSimpleLK(receivedString);
                 if (deviceId) {
                     // Construir la respuesta LK. El protocolo define fabricante, ID, longitud y contenido.
-                    const lkResponse = `[${generationMobile}*${deviceId}*${length}*AL]`;
+                    const lkResponse = `[${generationMobile}*${deviceId}*0002*AL]`;
                     socket.write(lkResponse); // Enviar respuesta
                     console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
                 }
