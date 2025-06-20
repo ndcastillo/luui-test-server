@@ -37,7 +37,7 @@ const server = Bun.listen({
             function parseSimpleLK(asciiData) {
                 // Ejemplo: "[CS*1234567890*0002*LK]"
 
-                console.log('ASCII DATA: ',asciiData);
+                console.log('ASCII DATA: ', asciiData);
 
                 if (asciiData.includes('*LK')) {
                     const parts = asciiData.substring(1, asciiData.length - 1).split('*');
