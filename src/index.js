@@ -15,7 +15,7 @@ const server = Bun.listen({
             const { remoteAddress, remotePort } = socket;
             console.log(`[Bun TCP] Conectado por ${remoteAddress}:${remotePort}`);
             // Puedes guardar el socket o información asociada si necesitas manejar múltiples clientes
-            socket.data = { id: 1, lastSeen: Date.now() };
+            socket.data = { id: generateUniqueId(), lastSeen: Date.now() };
         },
 
         // data se llama cuando el servidor recibe datos del cliente
@@ -25,7 +25,7 @@ const server = Bun.listen({
             // Para obtener la representación hexadecimal:
             const dataHex = Buffer.from(buffer).toString('hex');
             console.log(`[Bun TCP] Recibido de ${remoteAddress}:${remotePort} (HEX): ${dataHex}`);
-            
+
             // Aquí podrías añadir la lógica para responder al LK
             const receivedString = Buffer.from(buffer).toString('ascii'); // o 'utf-8' según el protocolo
 
@@ -33,30 +33,38 @@ const server = Bun.listen({
             // Necesitarás una lógica de parseo más robusta como la que discutimos antes.
             // Esto asume que el mensaje LK es exactamente '[CS*DEVICEID*0002*LK]'
             // y que `parseSimpleLK` extrae el DEVICEID.
-            
+
+            // Ejemplo: "[CS*1234567890*0002*LK]"
             function parseSimpleLK(asciiData) {
-                // Ejemplo: "[CS*1234567890*0002*LK]"
-
-                console.log(asciiData);
-
-                if (asciiData.includes('*LK')) {
+                if (asciiData.includes('LK')) {
                     const parts = asciiData.substring(1, asciiData.length - 1).split('*');
                     if (parts.length >= 2) {
+                        //0: Generation Mobile, 1: Device ID, 2: Length, 3: Command
                         return [parts[0], parts[1]]; // Devuelve el Device ID
                     }
                 }
+
                 return null;
             }
 
-            const [generationMobile, deviceId] = parseSimpleLK(receivedString);
-            if (deviceId) {
-                // Construir la respuesta LK. El protocolo define fabricante, ID, longitud y contenido.
-                // Aquí 'CS' es el fabricante, deviceId es el ID, '0002' es la longitud de 'LK'.
-                const lkResponse = `[${generationMobile}*${deviceId}*0002*LK]`;
-                socket.write(lkResponse); // Enviar respuesta
-                console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
+
+
+            ///////// LK: Link Keep
+            if (receivedString.includes('LK')) {
+                
+                const [generationMobile, deviceId] = parseSimpleLK(receivedString);
+                if (deviceId) {
+                    // Construir la respuesta LK. El protocolo define fabricante, ID, longitud y contenido.
+                    const lkResponse = `[${generationMobile}*${deviceId}*0002*LK]`;
+                    socket.write(lkResponse); // Enviar respuesta
+                    console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
+                }
+
+            }else if (receivedString.includes('UD')) {
+                console.log(receivedString);
             }
-            
+
+
         },
         // close se llama cuando la conexión se cierra
         close(socket, error) {
