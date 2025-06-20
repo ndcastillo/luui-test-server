@@ -40,11 +40,12 @@ const server = Bun.listen({
 
             // Ejemplo: "[CS*1234567890*0002*LK]"
             function parseSimpleLK(asciiData) {
-                if (asciiData.includes('LK')) {
+
+                if (asciiData.includes('LK')  || asciiData.includes('AL')) {
                     const parts = asciiData.substring(1, asciiData.length - 1).split('*');
                     if (parts.length >= 2) {
                         //0: Generation Mobile, 1: Device ID, 2: Length, 3: Command
-                        return [parts[0], parts[1]]; // Devuelve el Device ID
+                        return [parts[0], parts[1], parts[2]]; // Devuelve el Device ID
                     }
                 }
 
@@ -55,19 +56,30 @@ const server = Bun.listen({
 
             ///////// LK: Link Keep
             if (receivedString.includes('LK')) {
-                
-                const [generationMobile, deviceId] = parseSimpleLK(receivedString);
+
+                const [generationMobile, deviceId, length] = parseSimpleLK(receivedString);
                 if (deviceId) {
                     // Construir la respuesta LK. El protocolo define fabricante, ID, longitud y contenido.
-                    const lkResponse = `[${generationMobile}*${deviceId}*0002*LK]`;
+                    const lkResponse = `[${generationMobile}*${deviceId}*${length}*LK]`;
                     socket.write(lkResponse); // Enviar respuesta
                     console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
                 }
-
-            }else if (receivedString.includes('UD')) {
+            }
+            ///////// UD: User Data
+            else if (receivedString.includes('UD')) {
                 console.log(receivedString);
             }
-
+            //////// AL: Alarm Data Report
+            else if (receivedString.includes('AL')) {
+                console.log(receivedString);
+                const [generationMobile, deviceId, length] = parseSimpleLK(receivedString);
+                if (deviceId) {
+                    // Construir la respuesta LK. El protocolo define fabricante, ID, longitud y contenido.
+                    const lkResponse = `[${generationMobile}*${deviceId}*${length}*AL]`;
+                    socket.write(lkResponse); // Enviar respuesta
+                    console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
+                }
+            }
 
         },
         // close se llama cuando la conexión se cierra
