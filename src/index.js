@@ -15,7 +15,7 @@ const server = Bun.listen({
             const { remoteAddress, remotePort } = socket;
             console.log(`[Bun TCP] Conectado por ${remoteAddress}:${remotePort}`);
             // Puedes guardar el socket o información asociada si necesitas manejar múltiples clientes
-            // socket.data = { id: generateUniqueId(), lastSeen: Date.now() };
+            socket.data = { id: generateUniqueId(), lastSeen: Date.now() };
         },
 
         // data se llama cuando el servidor recibe datos del cliente
@@ -37,7 +37,7 @@ const server = Bun.listen({
             function parseSimpleLK(asciiData) {
                 // Ejemplo: "[CS*1234567890*0002*LK]"
 
-                console.log(asciiData);
+                console.log('ASCII DATA: ',asciiData);
 
                 if (asciiData.includes('*LK')) {
                     const parts = asciiData.substring(1, asciiData.length - 1).split('*');
