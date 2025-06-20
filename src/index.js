@@ -5,6 +5,10 @@ const PORT = 5093;      // Puerto que usa tu dispositivo (ajústalo)
 
 console.log(`[Bun TCP] Intentando escuchar en ${HOST}:${PORT}...`);
 
+async function generateUniqueId() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
 const server = Bun.listen({
     hostname: HOST,
     port: PORT,
