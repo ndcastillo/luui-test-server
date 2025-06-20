@@ -15,7 +15,7 @@ const server = Bun.listen({
             const { remoteAddress, remotePort } = socket;
             console.log(`[Bun TCP] Conectado por ${remoteAddress}:${remotePort}`);
             // Puedes guardar el socket o información asociada si necesitas manejar múltiples clientes
-            socket.data = { id: generateUniqueId(), lastSeen: Date.now() };
+            socket.data = { id: 1, lastSeen: Date.now() };
         },
 
         // data se llama cuando el servidor recibe datos del cliente
