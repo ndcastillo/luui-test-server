@@ -24,6 +24,7 @@ const server = Bun.listen({
 
         // data se llama cuando el servidor recibe datos del cliente
         data(socket, buffer) {
+            console.log('\n\nFecha', new Date().toISOString(), '\n');
             const { remoteAddress, remotePort } = socket;
             // El buffer es un Uint8Array o Buffer de Node.js
             // Para obtener la representación hexadecimal:
@@ -80,6 +81,8 @@ const server = Bun.listen({
                     console.log(`[Bun TCP] Enviada respuesta LK a ${deviceId} (ASCII): ${lkResponse}`);
                 }
             }
+
+
 
         },
         // close se llama cuando la conexión se cierra
